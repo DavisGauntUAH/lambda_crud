@@ -4,8 +4,6 @@ import os
 from botocore.exceptions import ClientError
 import boto3
 
-LOCALSTACK_INTERNAL_ENDPOINT_URL = f'http://{os.environ.get("LOCALSTACK_HOSTNAME")}:4566'
-
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s: %(levelname)s: %(message)s')
 
@@ -122,8 +120,7 @@ def get_boto3_client(service, region):
     """
     try:
       client = boto3.client(service,
-                            region_name=region,
-                            endpoint_url=LOCALSTACK_INTERNAL_ENDPOINT_URL)
+                            region_name=region,)
     except Exception as err:
       logger.exception(f'Error while connecting to localstack: Error: {err}')
     else:
@@ -137,8 +134,7 @@ def get_boto3_resource(service, region):
     """
     try:
         resource = boto3.resource(service,
-                            region_name=region,
-                            endpoint_url=LOCALSTACK_INTERNAL_ENDPOINT_URL)
+                            region_name=region,)
     except Exception as err:
         logger.exception(f'Error while connecting to localstack: Error: {err}')
     else:
@@ -156,9 +152,7 @@ def handler(event, context):
     
     bucket = event[action]['bucket_name']
     
-    if(action == 'delete_bucket'):
-        del_bucket(bucket, s3_resource, s3_client)
-    elif(action == 'delete_object'):
+    if(action == 'delete_object'):
         key = event[action]['key']
         del_file(bucket, key, s3_resource) 
     elif(action == 'read_object'):
