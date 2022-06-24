@@ -11,8 +11,6 @@ logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s: %(levelname)s: %(message)s')
 
 boto3.setup_default_session(profile_name=AWS_PROFILE)
-s3_client = boto3.client("s3")
-s3_resource = boto3.resource("s3")
 
 
 def generate_payload(task, bucket_name, key=None, write_data=None):
