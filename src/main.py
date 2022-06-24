@@ -6,7 +6,6 @@ import os
 
 AWS_REGION = os.environ.get('AWS_REGION')
 AWS_PROFILE = os.environ.get('AWS_PROFILE')
-print(AWS_PROFILE)
 
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s: %(levelname)s: %(message)s')
