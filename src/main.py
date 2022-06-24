@@ -2,11 +2,11 @@ import glob
 import json
 import logging
 import boto3
-from botocore.exceptions import ClientError
 import os
 
 AWS_REGION = os.environ.get('AWS_REGION')
 AWS_PROFILE = os.environ.get('AWS_PROFILE')
+print(AWS_PROFILE)
 
 logger = logging.getLogger()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s: %(levelname)s: %(message)s')
@@ -22,8 +22,8 @@ def generate_payload(task, bucket_name, key=None, write_data=None):
         "aws_region" : AWS_REGION,
         task : {
             "bucket_name" : bucket_name,
-            "key" : None,
-            "write_data" : None
+            "key" : key,
+            "write_data" : write_data
         }
     }
     return payload
@@ -88,8 +88,8 @@ def call_lambda(payload):
     and handles the return for use
     """    
     lmb_crud = boto3.client('lambda')
-    payload = json.dumps(payload, indent=3)
-    objects = lmb_crud.invoke(FunctionName="lambda_crud",       #Needs updated lambda name
+    payload = json.dumps(payload)
+    objects = lmb_crud.invoke(FunctionName="arn:aws:lambda:us-east-1:307493436926:function:dgaunt-crud",
                     InvocationType='RequestResponse',
                     Payload=payload)
 
@@ -100,7 +100,7 @@ def call_lambda(payload):
 
 def main():
 
-    b_name = 'davis-crud-bucket'
+    b_name = 'dgaunt-crud-bucket'
     
     files = glob.glob('./import/*.txt')
     for file in files:

@@ -1,6 +1,4 @@
-from email import message
 import logging
-import os
 from botocore.exceptions import ClientError
 import boto3
 
@@ -30,20 +28,6 @@ def empty_bucket(b_name, s3_resource):
     except Exception as err:
         logger.exception(f'Error : {err}')
         raise
-    else:
-        return resp
-    
-    
-def del_bucket(b_name, s3_r, s3_c):
-    """
-    Deletes and enpties a buckey.  Takes in a bucket name and the 
-    neccisary s3 objects
-    """
-    try:
-        empty_bucket(b_name, s3_r)
-        resp = s3_c.delete_bucket(Bucket=b_name)
-    except Exception as err:
-        logger.exception(f'Error: could not delete bucket: {err}')
     else:
         return resp
     
@@ -141,7 +125,7 @@ def get_boto3_resource(service, region):
         return resource
 
 
-def handler(event, context):
+def lambda_handler(event, context):
     
     region = event['aws_region']
     action = event['task']
@@ -170,8 +154,6 @@ def handler(event, context):
         key = event[action]['key']
         data = event[action]['write_data']
         append_obj(bucket, key, data, s3_resource, s3_client)
-    elif(action == 'make_bucket'):
-        create_bucket(bucket, s3_client)
     else:
         logger.error(f'{action} is an invalid task.')
         
